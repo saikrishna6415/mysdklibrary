@@ -1,63 +1,94 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+## Creating a New React Native Project
 
-# Getting Started
-
->**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
-
-## Step 1: Start the Metro Server
-
-First, you will need to start **Metro**, the JavaScript _bundler_ that ships _with_ React Native.
-
-To start Metro, run the following command from the _root_ of your React Native project:
+If you don’t already have a React Native project, you can create one using the following command:
 
 ```bash
-# using npm
-npm start
-
-# OR using Yarn
-yarn start
+npx react-native init mysdklibrary
 ```
 
-## Step 2: Start your Application
+Replace `mysdklibrary` with your chosen project name.
 
-Let Metro Bundler run in its _own_ terminal. Open a _new_ terminal from the _root_ of your React Native project. Run the following command to start your _Android_ or _iOS_ app:
+## Implementing Your React Native Features
 
-### For Android
+Develop your React Native components as you would in any typical React Native project.
 
-```bash
-# using npm
-npm run android
+## Preparing for Integration
 
-# OR using Yarn
-yarn android
+In your `android/app/build.gradle` file, add the following to the `defaultConfig` section:
+
+```groovy
+...
+multiDexEnabled true
+...
 ```
 
-### For iOS
+## Creating a React Native Activity for Android
 
-```bash
-# using npm
-npm run ios
+Add a new `ReactNativeActivity.java` in `android/app/src/main/java/com/mysdklibrary`. This will host your React Native view.
 
-# OR using Yarn
-yarn ios
-```
+## Packaging React Native as an Android Archive (AAR)
 
-If everything is set up _correctly_, you should see your new app running in your _Android Emulator_ or _iOS Simulator_ shortly provided you have set up your emulator/simulator correctly.
+1. Configure the Build Gradle:
 
-This is one way to run your app — you can also run it directly from within Android Studio and Xcode respectively.
+   Make necessary modifications in your `android/app/build.gradle` file.
 
-## Step 3: Modifying your App
+2. Configure the Settings Gradle:
 
-Now that you have successfully run the app, let's modify it.
+   Include and specify your React Native project directory.
 
-1. Open `App.tsx` in your text editor of choice and edit some lines.
-2. For **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Developer Menu** (<kbd>Ctrl</kbd> + <kbd>M</kbd> (on Window and Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (on macOS)) to see your changes!
+3. Remove the application tag from the manifest file.
 
-   For **iOS**: Hit <kbd>Cmd ⌘</kbd> + <kbd>R</kbd> in your iOS Simulator to reload the app and see your changes!
+4. Create the Android Assets Directory:
+
+   Run the following command to create the directory:
+
+   ```bash
+   mkdir -p android/app/src/main/assets
+   ```
+
+5. Bundle Your React Native Project:
+
+   Run the following command to bundle your project:
+
+   ```bash
+   npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res/
+   ```
+
+6. Build the AAR File:
+
+   Navigate to the android directory of your React Native project and run:
+
+   ```bash
+   ./gradlew :youreactnativeproject:assembleRelease
+   ```
+
+## Implementing the AAR in a Native Android Project
+
+1. Import the AAR:
+
+   Create a `libs` folder in `android/app` and copy your generated AAR file.
+
+2. Add React Native’s Maven Repository:
+
+   Make sure your native Android project can access React Native dependencies by adding the repository in the `build.gradle` file.
+
+3. Include Necessary Dependencies:
+
+   Add required dependencies in your app’s `build.gradle`.
+
+4. Modify the `MainApplication.java`:
+
+   ```
+
+5. Add `ReactNativeActivity` in `AndroidManifest.xml`:
+
+   ```xml
+   <activity android:name="com.mysdklibrary.ReactNativeActivity">
+   ```
 
 ## Congratulations! :tada:
 
-You've successfully run and modified your React Native App. :partying_face:
+You've successfully integrated your React Native App into a native Android project. :partying_face:
 
 ### Now what?
 
